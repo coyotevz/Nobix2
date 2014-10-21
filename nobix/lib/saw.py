@@ -158,6 +158,7 @@ class SQLAlchemy(object):
             convert_unicode = convert_unicode
         )
         self.session.configure(bind=self.engine)
+        self.Model.metadata.bind = self.engine
 
     @property
     def engine(self):
@@ -187,6 +188,10 @@ class SQLAlchemy(object):
     def add(self, *args, **kwargs):
         """Proxy for session.add"""
         return self.session.add(*args, **kwargs)
+
+    def add_all(self, *args, **kwargs):
+        """Proxy for session.add_all"""
+        return self.session.add_all(*args, **kwargs)
 
     def flush(self, *args, **kwargs):
         """Proxy for session.flush"""
