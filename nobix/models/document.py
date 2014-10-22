@@ -30,7 +30,7 @@ class Document(db.Model):
     _statuses = {
         STATUS_DRAFT: 'Borrador',
         STATUS_CONFIRMED: 'Confirmada',
-        STATUS_PENDING: 'Pendiente de Pago',
+        STATUS_PENDING: 'Pendiente',
         STATUS_EXPIRED: 'Vencida',
         STATUS_CLOSED: 'Cerrado',
     }
@@ -69,6 +69,7 @@ class Document(db.Model):
 
     #: items field added by DocumentItem model
     #: taxes field added by TaxItem model
+    #: payments field added by Pyment model
     #: book_entry field added by BookEntry model
 
     @property
