@@ -68,19 +68,8 @@ class Document(db.Model):
     }
 
     @property
-    def doc_type(self):
-        return self._doc_type
-
-    @doc_type.setter
-    def doc_type(self, value):
-        if value not in get_current_config().documents.keys():
-            raise NobixModelError("'{}' no es un tipo de documento válido"\
-                                  .format(value))
-        self._doc_type = value
-
-    @property
     def total(self):
-        return Decimal(self.net if self.net is not None else 0) +
+        return Decimal(self.net if self.net is not None else 0) +\
                Decimal(sum(t.amount) for t in self.taxes)
 
 
@@ -135,7 +124,8 @@ class DocumentItem(db.Model):
 
     document_id = db.Column(db.Integer, db.ForeignKey('document.id'),
                             nullable=False)
-    document = db.relationship(Document, backref="items")
+    document = db.relationship(Document,
+            backref=db.backref("items", cascade="all, delete-orphan"))
     quantity = db.Column(db.Numeric(10, 2))
     description = db.Column(db.Unicode)
     sku = db.Column(db.Unicode)
