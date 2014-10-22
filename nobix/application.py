@@ -7,6 +7,9 @@
 
 import sys
 
+from nobix.mainloop import MainLoop
+from nobix.ui import MainWindow
+
 class Application(object):
 
     def __init__(self, appname='nobix'):
@@ -45,13 +48,29 @@ class Application(object):
         "".format(self.appname))
 
     def run_nobix(self):
-        print("Run Nobix")
+        self.create_ui()
+        self._run()
 
     def run_create_password(self):
         print("Run create_password")
 
     def run_shell(self):
         print("Run shell")
+
+    def create_ui(self):
+        self.main_window = MainWindow(self)
+
+    def _run(self):
+        self.loop = MainLoop(self.main_window,
+                             unhandled_input=self.unhandled_input)
+        self.loop.run()
+
+    def stop(self):
+        self.loop.quit()
+
+    def unhandled_input(self, key):
+        if key in ('q', 'Q'):
+            self.stop()
 
 
 def main():
