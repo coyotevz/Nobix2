@@ -75,12 +75,14 @@ class Document(db.Model):
 
 class SaleDocument(Document):
     __tablename__ = 'sale_document'
-    __mapper_args__ = {'polymorphic_identity': DOC_SALE}
-    __table_args__ = (db.UniqueConstraint('doc_type_id', 'issue_place_id', 'number'),)
 
     id = db.Column(db.Integer, db.ForeignKey('document.id'), primary_key=True)
+
     # copy doc_type_id to use in UniqueConstraint
-    doc_type_id = db.Column(db.Integer, db.ForeignKey('document.doc_type_id'))
+    doc_type_id = db.column_property(
+            db.Column(db.Integer, db.ForeignKey('document.doc_type_id')),
+            Document.doc_type_id)
+
     number = db.Column(db.Integer, nullable=False)
 
     issue_place_id = db.Column(db.Integer, db.ForeignKey('place.id'),
@@ -101,6 +103,12 @@ class SaleDocument(Document):
     customer_address = db.Column(db.UnicodeText(60))
     customer_cuit = db.Column(db.UnicodeText(13), nullable=True)
 
+    __table_args__ = (db.UniqueConstraint('doc_type_id', 'issue_place_id', 'number'),)
+    __mapper_args__ = {
+        'polymorphic_identity': DOC_SALE,
+        'inherit_condition': Document.id == id,
+    }
+
     def __str__(self):
         return "{} {}-{}".format(self.doc_type.name,
                                  self.issue_place.pos_number,
@@ -112,7 +120,6 @@ class SaleDocument(Document):
 
 class PurchaseDocument(Document):
     __tablename__ = 'purchase_document'
-    __mapper_args__ = {'polymorphic_identity': DOC_PURCHASE}
 
     id = db.Column(db.Integer, db.ForeignKey('document.id'), primary_key=True)
 
@@ -120,6 +127,11 @@ class PurchaseDocument(Document):
     #                        nullable=False)
     #supplier = db.relationship('Supplier')
     pos_number = db.Column(db.Integer)
+
+    __mapper_args__ = {
+        'polymorphic_identity': DOC_PURCHASE,
+        'inherit_condition': Document.id == id,
+    }
 
 
 class DocumentItem(db.Model):
