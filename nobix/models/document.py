@@ -7,6 +7,7 @@ from decimal import Decimal
 from sqlalchemy import UniqueConstraint
 
 from nobix.models import db
+from nobix.models.customer import Customer
 from nobix.models.place import Place
 
 DOC_SALE = 'sale'
@@ -16,12 +17,14 @@ doc_subtypes = [
     DOC_PURCHASE
 ]
 
+
 class DocumentType(db.Model):
     __tablename__ = 'document_type'
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.Unicode, unique=True)
     name = db.Column(db.Unicode)
     subtype = db.Column(db.Enum(*doc_subtypes, name='document_subtype_enum'))
+
 
 class Document(db.Model):
     __tablename__ = 'document'
@@ -88,15 +91,16 @@ class SaleDocument(Document):
     issue_place_id = db.Column(db.Integer, db.ForeignKey('place.id'),
                                nullable=False)
     issue_place = db.relationship(Place, backref=db.backref("documents",
-                                                              lazy="dynamic"))
+                                                            lazy="dynamic"))
 
     #salesman_id = db.Column(db.Integer, db.ForeignKey('user.id'),
     #                        nullable=False)
     #salesman = db.relationship('User')
 
-    #customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'),
-    #                        nullable=False)
-    #customer = db.relationship('Customer')
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'),
+                            nullable=False)
+    customer = db.relationship(Customer, backref=db.backref("documents",
+                                                            lazy="dynamic"))
 
     # Info extra documento
     customer_name = db.Column(db.UnicodeText(35))
