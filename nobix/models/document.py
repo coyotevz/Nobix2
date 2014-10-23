@@ -1,12 +1,13 @@
 """
-    nobix.models.documento
-    ~~~~~~~~~~~~~~~~~~~~~~
+    nobix.models.document
+    ~~~~~~~~~~~~~~~~~~~~~
 """
 
 from decimal import Decimal
 from sqlalchemy import UniqueConstraint
 
 from nobix.models import db
+from nobix.models.place import Place
 
 DOC_SALE = 'sale'
 DOC_PURCHASE = 'purchase'
@@ -46,7 +47,6 @@ class Document(db.Model):
     type = db.Column(db.String)
     issue_date = db.Column(db.DateTime, nullable=False)
     expiration_date = db.Column(db.DateTime)
-    number = db.Column(db.Integer, nullable=False)
     status = db.Column(db.Enum(*_statuses.keys(), name='document_status_enum'),
                        default=STATUS_DRAFT, nullable=False)
 
@@ -76,13 +76,17 @@ class Document(db.Model):
 class SaleDocument(Document):
     __tablename__ = 'sale_document'
     __mapper_args__ = {'polymorphic_identity': DOC_SALE}
+    __table_args__ = (db.UniqueConstraint('doc_type_id', 'issue_place_id', 'number'),)
 
     id = db.Column(db.Integer, db.ForeignKey('document.id'), primary_key=True)
+    # copy doc_type_id to use in UniqueConstraint
+    doc_type_id = db.Column(db.Integer, db.ForeignKey('document.doc_type_id'))
+    number = db.Column(db.Integer, nullable=False)
 
-    #issue_place_id = db.Column(db.Integer, db.ForeignKey('place.id'),
-    #                           nullable=False)
-    #issue_place = db.relationship('Place', backref=db.backref("documents",
-    #                                                          lazy="dynamic"))
+    issue_place_id = db.Column(db.Integer, db.ForeignKey('place.id'),
+                               nullable=False)
+    issue_place = db.relationship(Place, backref=db.backref("documents",
+                                                              lazy="dynamic"))
 
     #salesman_id = db.Column(db.Integer, db.ForeignKey('user.id'),
     #                        nullable=False)
