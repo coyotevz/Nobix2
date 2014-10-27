@@ -1,4 +1,4 @@
 #!/usr/bin/python
-from nobix.application import main
+from nobix.app import main
 
 main()

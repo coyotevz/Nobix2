@@ -1,6 +1,6 @@
 """
-    nobix.application
-    ~~~~~~~~~~~~~~~~~
+    nobix.app
+    ~~~~~~~~~
 
     Main application module.
 """
