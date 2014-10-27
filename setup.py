@@ -15,7 +15,7 @@ setup(
 
     entry_points = {
         'console_scripts': [
-            'nobix = nobix.application:main',
+            'nobix = nobix.app:main',
         ],
     },
 
