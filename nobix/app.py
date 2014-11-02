@@ -41,7 +41,12 @@ class Application(object):
         self.window = MainWindow(self)
 
     def main_loop(self):
+        tmp_palette = [
+            ('menubar', 'dark gray', 'light gray'),
+            ('statusbar', 'white', 'dark cyan'),
+        ]
         self.loop = MainLoop(self.window,
+                             palette=tmp_palette,
                              unhandled_input=self.unhandled_input)
         self.loop.run()
 
