@@ -8,7 +8,7 @@
 import sys
 from configparser import ConfigParser
 
-from nobix.mainloop import MainLoop
+from urwid import MainLoop, ExitMainLoop
 from nobix.ui import MainWindow
 
 class Application(object):
@@ -42,7 +42,8 @@ class Application(object):
 
     def main_loop(self):
         tmp_palette = [
-            ('menubar', 'dark gray', 'light gray'),
+            ('mainbody', 'white', 'dark blue'),
+            ('menubar', 'black', 'light gray'),
             ('statusbar', 'white', 'dark cyan'),
         ]
         self.loop = MainLoop(self.window,
@@ -51,7 +52,7 @@ class Application(object):
         self.loop.run()
 
     def quit(self):
-        self.loop.quit()
+        raise ExitMainLoop()
 
     def unhandled_input(self, key):
         if key in ('q', 'Q'):
